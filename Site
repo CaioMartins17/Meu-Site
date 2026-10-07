@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Mectref17 – Editor de vídeos e thumbnails</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{--bg:#121212;--panel:#1c1c1c;--line:#363636;--text:#f2f2f2;--mute:#a3a3a3;--pink:#f2f2f2;--yellow:#cfcfcf;--cyan:#8a8a8a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px);
+    scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #3d3d3d 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    font: 400 1.05rem/1.6 "DM Sans", system-ui, sans-serif;
+}
+
+h1,h2,h3{font-family:"Bricolage Grotesque","Arial Black",sans-serif;line-height:1.05;margin:0}
+
+a{color:inherit}
+
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+
+nav b{font:800 1.2rem "Bricolage Grotesque",sans-serif}
+
+nav a{text-decoration:none;color:var(--mute);margin-left:18px}
+
+nav a:hover{color:var(--text)}
+
+.hero{padding:48px 0 72px}
+
+h1{font-size:clamp(2.6rem,9vw,6rem);font-weight:800;letter-spacing:-.03em;max-width:12ch}
+.hero p{max-width:46ch;color:var(--mute);margin:20px 0 28px}
+
+.btn{display:inline-block;background:var(--pink);color:#121212;font-weight:500;padding:14px 26px;border-radius:999px;text-decoration:none}
+
+.btn:hover{background:#fff}
+
+.btn.alt{background:#fff;border:2px solid var(--line);margin-left:10px}
+
+.btn.alt:hover{border-color:var(--yellow);background:transparent;color:#fff}
+
+/* timeline */
+.tl{margin-top:56px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+
+.track{display:flex;gap:4px;margin:6px 0;height:34px}
+
+.clip{border-radius:5px;font-size:.75rem;padding:7px 10px;white-space:nowrap;overflow:hidden;color:#121212;font-weight:500}
+
+.v{background:var(--pink)}.t{background:var(--yellow)}.a{background:var(--cyan)}
+
+.gap{background:transparent}
+
+.head{position:absolute;top:0;bottom:0;left:0;width:2px;background:#fff;animation:play 5s linear 1 forwards}
+
+.head::before{content:"";position:absolute;top:0;left:-6px;border:7px solid transparent;border-top-color:#fff}
+
+@keyframes play{to{left:100%}}
+
+section{padding:72px 0;border-top:1px solid var(--line)}
+
+h2{font-size:clamp(1.9rem,5vw,3rem);margin-bottom:12px;letter-spacing:-.02em}
+
+.sub{color:var(--mute);max-width:52ch;margin:0 0 32px}
+
+h3{font-size:1.25rem;margin:0 0 4px}
+
+.shorts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+.work{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);display:flex;align-items:flex-end;padding:14px;font-weight:500;text-decoration:none}
+
+.shorts .work {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    padding: 0;
+    overflow: hidden;
+    display: block;
+}
+
+.shorts .work img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.shorts .work span {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    z-index: 2;
+}
+
+.thumbs .work{
+    aspect-ratio:16/9
+    posistion:relative;
+    padding:0;
+    overflow:hidden;
+    display:block;
+    border-radius:10px;
+}
+.thumbs .work img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.thumbs .work span{
+    position:absolute;
+    bottom:14px;
+    left:14px;
+    z-index:2;
+}
+
+.work span{background:rgba(18,18,18,.85);padding:4px 10px;border-radius:5px;font-size:.85rem}
+
+.g1{background:linear-gradient(135deg,#f2f2f2,#4a4a4a)}.g2{background:linear-gradient(135deg,#8a8a8a,#222)}
+
+.g3{background:linear-gradient(135deg,#cfcfcf,#6b6b6b)}.g4{background:linear-gradient(135deg,#3a3a3a,#121212)}
+
+.g5{background:linear-gradient(135deg,#bdbdbd,#2a2a2a)}.g6{background:linear-gradient(135deg,#5a5a5a,#e0e0e0)}
+
+.work:hover{border-color:var(--yellow)}
+
+.hint{color:var(--mute);font-size:.9rem;margin-top:14px}
+
+.srv{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px}
+
+.srv div{border-left:4px solid var(--pink);padding-left:16px}
+
+.srv div:nth-child(2){border-color:var(--yellow)}.srv div:nth-child(3){border-color:var(--cyan)}
+
+.srv p{margin:6px 0 0;color:var(--mute)}
+
+.contact{text-align:left}
+
+.contact a.big{font:800 clamp(1.4rem,5vw,2.6rem) "Bricolage Grotesque",sans-serif;text-decoration:none;border-bottom:4px solid var(--pink);word-break:break-all}
+
+.contact a.big:hover{border-color:var(--yellow)}
+
+.links{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
+
+.links a{border:2px solid var(--line);border-radius:999px;padding:8px 18px;text-decoration:none}
+
+.links a:hover{border-color:var(--yellow)}
+
+footer{padding:28px 0;color:var(--mute);font-size:.9rem;border-top:1px solid var(--line)}
+
+@media(max-width:560px){.btn.alt{margin:10px 0 0}nav a{margin-left:12px}}
+
+@media(prefers-reduced-motion:reduce){.head{animation:none;left:60%}html{scroll-behavior:auto}}
+</style>
+
+
+
+</head>
+<body>
+<div class="wrap">
+<nav><b>Mectref17</b><div><a href="#trabalhos">Trabalhos</a><a href="#servicos">Serviços</a><a href="#contato">Contato</a></div></nav>
+
+<header class="hero">
+<h1>Vídeos e thumbnails para seu Canal.</h1>
+<p>Edito vídeos para YouTube, Shorts e TikTok e crio thumbnails do corte bruto ao vídeo pronto para postar. Preço acessível</p>
+<a class="btn" href="#contato">Pedir orçamento</a><a class="btn alt" href="#trabalhos">Ver trabalhos</a>
+
+<div class="tl" aria-hidden="true">
+<div class="track"><div class="clip v" style="flex:3">Abertura</div><div class="clip v" style="flex:5">Corte dinâmico</div><div class="clip v" style="flex:2">Zoom</div><div class="clip v" style="flex:4">Final</div></div>
+<div class="track"><div class="gap" style="flex:2"></div><div class="clip t" style="flex:4">Legendas animadas</div><div class="gap" style="flex:1"></div><div class="clip t" style="flex:5">Títulos e efeitos</div></div>
+<div class="track"><div class="clip a" style="flex:7">Trilha e mixagem</div><div class="clip a" style="flex:7">Efeitos sonoros</div></div>
+<div class="head"></div>
+</div>
+</header>
+
+<section id="trabalhos">
+
+    <h2>Trabalhos</h2>
+<p class="sub">Vídeos Horizontais, verticais para Shorts e TikTok, e thumbnails para vídeos longos.</p>
+<h3 style="margin-bottom:14px">Shorts e TikTok</h3>
+
+<div class="shorts">
+<a class="work g1"
+   href="https://www.youtube.com/shorts/ikz6_QpscAI"
+   target="_blank">
+
+    <img
+        src="https://img.youtube.com/vi/ikz6_QpscAI/maxresdefault.jpg"
+        alt="Thumbnail do Short 1">
+
+    <span>Short 1</span>
+
+</a>
+
+<a class="work g2"
+   href="https://www.youtube.com/shorts/kMImWaaRm5M"
+   target="_blank">
+
+    <img
+        src="https://img.youtube.com/vi/kMImWaaRm5M/maxresdefault.jpg"
+        alt="Thumbnail do Short 2">
+
+    <span>Short 2</span>
+
+</a>
+
+<a class="work g3"
+   href="https://www.tiktok.com/@mectref17/video/7600890156526128404"
+   target="_blank">
+
+    <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQJoMY5uG07eNQewnpcQ5z9FBiqx1o8FipRqvthxnWkQ&s=10"
+        alt="Thumbnail do TikTok 1">
+
+    <span>TikTok 1</span>
+
+</a>
+
+
+
+<a class="work g4" 
+    href="https://www.tiktok.com/@mectref17/video/7585262538485583111"
+    target="_blank">
+     
+    <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQJoMY5uG07eNQewnpcQ5z9FBiqx1o8FipRqvthxnWkQ&s=10"
+        alt="Thumbnail do TikTok 2">
+    
+    <span>TikTok 2</span></a>
+
+</div>
+
+
+
+
+
+<h3 style="margin:36px 0 14px">Videos e Thumbnails</h3>
+
+<div class="thumbs">
+
+<a class="work g5"
+   href="https://www.youtube.com/watch?v=TP1DzASe5iw"
+   target="_blank">
+    <img
+        src="https://img.youtube.com/vi/TP1DzASe5iw/hqdefault.jpg"
+        alt="Thumbnail do Video 1">
+    <span>Video 1</span>
+
+</a>
+
+<a class="work g6"
+   href="https://www.youtube.com/watch?v=bFX5PTHVVaY&t=7s"
+   target="_blank">
+
+    <img
+        src="https://img.youtube.com/vi/bFX5PTHVVaY/hqdefault.jpg"
+        alt="Thumbnail do Video 2">
+
+    <span>Video 2</span>
+
+</a>
+
+<a class="work g3"
+     href="https://www.youtube.com/watch?v=A88vciiJFfw"
+     target="_Blank">
+    
+     <img
+         src="https://img.youtube.com/vi/A88vciiJFfw/hqdefault.jpg"
+         alt="Thumbnail do Video 3"
+    <span>Thumbnail 3</span>
+</a>
+
+</div>
+<p class="hint">Videos do meu canal usados como exemplo</p>
+</section>
+
+<section id="servicos">
+<h2>Serviços</h2>
+<p class="sub">Você envia o material bruto, eu devolvo pronto para publicar.</p>
+<div class="srv">
+<div><h3>Edição para YouTube</h3><p>Cortes, ritmo, legendas, trilha e efeitos para vídeos longos.</p></div>
+<div><h3>Shorts e TikTok</h3><p>Vídeos verticais curtos com retenção alta e legendas em destaque.</p></div>
+<div><h3>Thumbnails</h3><p>Imagens chamativas, com texto legível até no celular.</p></div>
+</div>
+</section>
+
+<section id="contato" class="contact">
+<h2>Vamos trabalhar juntos?</h2>
+<p class="sub">Conte sobre seu canal e o tipo de vídeo. Respondo rápido.</p>
+<a class="big" href="mailto:caiomartinsgomes@hotmail.com">caiomartinsgomes@hotmail.com</a>
+<div class="links">
+<a href="https://www.youtube.com/@mectref17" target="_blank" rel="noopener">YouTube</a><a href="https://www.tiktok.com/@mectref17" target="_blank"rel="noopener">TikTok</a><a href="https://www.instagram.com/caio_gomes0z/"target="_blank"rel="noopener">Instagram</a><a href="https://wa.me/5511995518970"target="_Blank">WhatsApp</a>
+</div>
+</section>
+</div>
+<footer><div class="wrap">© 2026 Mectref17. Todos os direitos reservados.</div></footer>
+</body>
+</html>
